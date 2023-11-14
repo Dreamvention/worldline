@@ -175,10 +175,24 @@ class ControllerExtensionPaymentWorldline extends Controller {
 			$billing_address->setZip($order_info['payment_postcode']);
 		}
 				
+		if ($order_info['payment_address_1']) {
+			$billing_address->setStreet($order_info['payment_address_1']);
+		}
+		
+		$browser_data = new OnlinePayments\Sdk\Domain\BrowserData();
+		$browser_data->setColorDepth($this->request->post['browser_color_depth']);
+		$browser_data->setScreenHeight($this->request->post['browser_screen_height']);
+		$browser_data->setScreenWidth($this->request->post['browser_screen_width']);
+			
+		$customer_device = new OnlinePayments\Sdk\Domain\CustomerDevice();
+		$customer_device->setBrowserData($browser_data);
+		$customer_device->setIpAddress($this->request->server['REMOTE_ADDR']);
+		
 		$customer = new OnlinePayments\Sdk\Domain\Customer();
 		$customer->setPersonalInformation($personal_information);
         $customer->setContactDetails($contact_details);
         $customer->setBillingAddress($billing_address);
+		$customer->setDevice($customer_device);
 				
 		if ($this->cart->hasShipping()) {
 			$shipping_price = 0;

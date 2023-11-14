@@ -8,10 +8,20 @@
 <script type="text/javascript">
 
 $('#worldline-form #worldline-button-confirm').on('click', function() {	
+	$('#worldline-form #browser-info').remove();
+	
+	html  = '<div id="browser-info">';
+	html += '<input type="hidden" name="browser_color_depth" value="' + window.screen.colorDepth + '" />';
+	html += '<input type="hidden" name="browser_screen_height" value="' + window.screen.height + '" />';
+	html += '<input type="hidden" name="browser_screen_width" value="' + window.screen.width + '" />';
+	html += '</div>';
+	
+	$('#worldline-form').append(html);
+	
 	$.ajax({
 		type: 'post',
 		url: 'index.php?route=extension/payment/worldline/confirm',
-		data: $('#worldline-form input[type="radio"]:checked, #worldline-form input[type="checkbox"]:checked, #worldline-form select'),
+		data: $('#worldline-form input[type="hidden"]'),
 		dataType: 'json',
 		beforeSend: function() {
             $('#worldline-button-confirm').prop('disabled', true).button('loading');
