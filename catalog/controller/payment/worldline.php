@@ -66,6 +66,8 @@ class Worldline extends \Opencart\System\Engine\Controller {
 		$api_secret = $setting['account']['api_secret'][$environment];
 		$api_endpoint = $setting['account']['api_endpoint'][$environment];
 		$authorization_mode = strtoupper($setting['advanced']['authorization_mode']);
+		$challenge_indicator = $setting['advanced']['challenge_indicator'];
+		$exemption_request = $setting['advanced']['exemption_request'];
 		
 		$language_code = explode('-', $this->config->get('config_language'));
 		$language_code = strtoupper(reset($language_code));
@@ -288,10 +290,15 @@ class Worldline extends \Opencart\System\Engine\Controller {
 		if ($item_total == $order_total) {
 			$order->setShoppingCart($shopping_cart);
 		}
+		
+		$three_d_secure = new \OnlinePayments\Sdk\Domain\ThreeDSecure();
+		$three_d_secure->setChallengeIndicator($challenge_indicator);
+		$three_d_secure->setExemptionRequest($exemption_request);
 						
 		$card_payment_method_specific_input = new \OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput();
 		$card_payment_method_specific_input->setAuthorizationMode($authorization_mode);
 		$card_payment_method_specific_input->setSkipAuthentication(false);
+		$card_payment_method_specific_input->setThreeDSecure($three_d_secure);
 		$card_payment_method_specific_input->setTransactionChannel('ECOMMERCE');
 						
 		$redirect_payment_method_specific_input = new \OnlinePayments\Sdk\Domain\RedirectPaymentMethodSpecificInput();

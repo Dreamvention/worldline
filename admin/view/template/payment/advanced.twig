@@ -87,6 +87,38 @@
 							</div>
 						</div>
 						<div class="row mb-3">
+							<label class="col-sm-2 col-form-label" for="input-challenge-indicator">{{ entry_challenge_indicator }}</label>
+							<div class="col-sm-10">
+								<div class="input-group">
+									<select name="payment_worldline_setting[advanced][challenge_indicator]" id="input-challenge-indicator" class="form-select">
+										{% for challenge_indicator in setting['challenge_indicator'] %}
+										{% if challenge_indicator['code'] == setting['advanced']['challenge_indicator'] %}
+										<option value="{{ challenge_indicator['code'] }}" selected="selected">{{ attribute(_context, challenge_indicator['name']) }}</option>
+										{% else %}
+										<option value="{{ challenge_indicator['code'] }}">{{ attribute(_context, challenge_indicator['name']) }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row mb-3">
+							<label class="col-sm-2 col-form-label" for="input-exemption-request">{{ entry_exemption_request }}</label>
+							<div class="col-sm-10">
+								<div class="input-group">
+									<select name="payment_worldline_setting[advanced][exemption_request]" id="input-exemption-request" class="form-select">
+										{% for exemption_request in setting['exemption_request'] %}
+										{% if exemption_request['code'] == setting['advanced']['exemption_request'] %}
+										<option value="{{ exemption_request['code'] }}" selected="selected">{{ attribute(_context, exemption_request['name']) }}</option>
+										{% else %}
+										<option value="{{ exemption_request['code'] }}">{{ attribute(_context, exemption_request['name']) }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row mb-3">
 							<label class="col-sm-2 col-form-label" for="input-advanced-debug">{{ entry_debug }}</label>
 							<div class="col-sm-10">
 								<div class="form-check form-switch form-switch-lg">

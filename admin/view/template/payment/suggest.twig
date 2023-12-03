@@ -32,6 +32,10 @@
 				</ul>
 				<div class="tab-content">
 					<form action="{{ save }}" method="post" id="form-payment" data-oc-toggle="ajax">
+						<div class="row mb-3">
+							<label class="col-sm-2 col-form-label">{{ entry_merchant_id }}</span></label>
+							<label class="col-sm-10 col-form-label"><div class="text-start">{{ setting['account']['merchant_id'][setting['account']['environment']] }}</div></label>
+						</div>
 						<div class="row mb-3 required">
 							<label class="col-sm-2 col-form-label" for="input-suggest-company-name"><span data-bs-toggle="tooltip" title="{{ help_company_name }}">{{ entry_company_name }}</span></label>
 							<div class="col-sm-10">
