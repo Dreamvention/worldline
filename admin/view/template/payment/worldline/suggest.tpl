@@ -39,6 +39,10 @@
 				</ul>
 				<div class="tab-content">
 					<form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-payment" class="form-horizontal">
+						<div class="form-group">
+							<label class="col-sm-2 control-label"><?php echo $entry_merchant_id; ?></span></label>
+							<label class="col-sm-10 control-label"><div class="text-left"><?php echo $setting['account']['merchant_id'][$setting['account']['environment']]; ?></div></label>
+						</div>
 						<div class="form-group required">
 							<label class="col-sm-2 control-label" for="input-suggest-company-name"><span data-toggle="tooltip" title="<?php echo $help_company_name; ?>"><?php echo $entry_company_name; ?></span></label>
 							<div class="col-sm-10">
