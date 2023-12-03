@@ -20,7 +20,9 @@ $_['worldline_setting'] = array(
 		'button_title' => array(),
 		'debug' => false,
 		'authorization_mode' => 'sale',
-		'group_cards' => true
+		'group_cards' => true,
+		'challenge_indicator' => 'challenge-required',
+		'exemption_request' => 'low-value'
 	),
 	'order_status' => array(
 		'created' => array(
@@ -84,6 +86,46 @@ $_['worldline_setting'] = array(
 		'sale' => array(
 			'code' => 'sale',
 			'name' => 'text_sale'
+		)
+	),
+	'challenge_indicator' => array(
+		'no-preference' => array(
+			'code' => 'no-preference',
+			'name' => 'text_no_preference'
+		),
+		'no-challenge-requested' => array(
+			'code' => 'no-challenge-requested',
+			'name' => 'text_no_challenge_requested'
+		),
+		'challenge-requested' => array(
+			'code' => 'challenge-requested',
+			'name' => 'text_challenge_requested'
+		),
+		'challenge-required' => array(
+			'code' => 'challenge-required',
+			'name' => 'text_challenge_required'
+		)
+	),
+	'exemption_request' => array(
+		'none' => array(
+			'code' => 'none',
+			'name' => 'text_exemption_none'
+		),
+		'automatic' => array(
+			'code' => 'automatic',
+			'name' => 'text_exemption_automatic'
+		),
+		'transaction-risk-analysis' => array(
+			'code' => 'transaction-risk-analysis',
+			'name' => 'text_exemption_transaction_risk_analysis'
+		),
+		'low-value' => array(
+			'code' => 'low-value',
+			'name' => 'text_exemption_low_value'
+		),
+		'whitelist' => array(
+			'code' => 'whitelist',
+			'name' => 'text_exemption_whitelist'
 		)
 	),
 	'transaction_status' => array(

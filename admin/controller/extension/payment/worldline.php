@@ -153,12 +153,23 @@ class ControllerExtensionPaymentWorldline extends Controller {
 		$data['text_pre_authorization'] = $this->language->get('text_pre_authorization');
 		$data['text_final_authorization'] = $this->language->get('text_final_authorization');
 		$data['text_sale'] = $this->language->get('text_sale');
+		$data['text_no_preference'] = $this->language->get('text_no_preference');
+		$data['text_no_challenge_requested'] = $this->language->get('text_no_challenge_requested');
+		$data['text_challenge_requested'] = $this->language->get('text_challenge_requested');
+		$data['text_challenge_required'] = $this->language->get('text_challenge_required');
+		$data['text_exemption_none'] = $this->language->get('text_exemption_none');
+		$data['text_exemption_automatic'] = $this->language->get('text_exemption_automatic');
+		$data['text_exemption_transaction_risk_analysis'] = $this->language->get('text_exemption_transaction_risk_analysis');
+		$data['text_exemption_low_value'] = $this->language->get('text_exemption_low_value');
+		$data['text_exemption_whitelist'] = $this->language->get('text_exemption_whitelist');
 		$data['text_all_zones'] = $this->language->get('text_all_zones');
 				
 		$data['entry_title'] = $this->language->get('entry_title');
 		$data['entry_button_title'] = $this->language->get('entry_button_title');
 		$data['entry_authorization_mode'] = $this->language->get('entry_authorization_mode');
 		$data['entry_group_cards'] = $this->language->get('entry_group_cards');
+		$data['entry_challenge_indicator'] = $this->language->get('entry_challenge_indicator');
+		$data['entry_exemption_request'] = $this->language->get('entry_exemption_request');
 		$data['entry_debug'] = $this->language->get('entry_debug');
 		$data['entry_total'] = $this->language->get('entry_total');
 		$data['entry_geo_zone'] = $this->language->get('entry_geo_zone');
@@ -807,6 +818,7 @@ class ControllerExtensionPaymentWorldline extends Controller {
 		$data['text_tab_transaction'] = $this->language->get('text_tab_transaction');
 		$data['text_tab_suggest'] = $this->language->get('text_tab_suggest');
 		
+		$data['entry_merchant_id'] = $this->language->get('entry_merchant_id');
 		$data['entry_company_name'] = $this->language->get('entry_company_name');
 		$data['entry_message'] = $this->language->get('entry_message');
 		

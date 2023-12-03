@@ -90,6 +90,34 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label class="col-sm-2 control-label" for="input-challenge-indicator"><?php echo $entry_challenge_indicator; ?></label>
+							<div class="col-sm-10">
+								<select name="worldline_setting[advanced][challenge_indicator]" id="input-challenge-indicator" class="form-control">
+									<?php foreach ($setting['challenge_indicator'] as $challenge_indicator) { ?>
+									<?php if ($challenge_indicator['code'] == $setting['advanced']['challenge_indicator']) { ?>
+									<option value="<?php echo $challenge_indicator['code']; ?>" selected="selected"><?php echo ${$challenge_indicator['name']}; ?></option>
+									<?php } else { ?>
+									<option value="<?php echo $challenge_indicator['code']; ?>"><?php echo ${$challenge_indicator['name']}; ?></option>
+									<?php } ?>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label" for="input-exemption-request"><?php echo $entry_exemption_request; ?></label>
+							<div class="col-sm-10">
+								<select name="worldline_setting[advanced][exemption_request]" id="input-exemption-request" class="form-control">
+									<?php foreach ($setting['exemption_request'] as $exemption_request) { ?>
+									<?php if ($exemption_request['code'] == $setting['advanced']['exemption_request']) { ?>
+									<option value="<?php echo $exemption_request['code']; ?>" selected="selected"><?php echo ${$exemption_request['name']}; ?></option>
+									<?php } else { ?>
+									<option value="<?php echo $exemption_request['code']; ?>"><?php echo ${$exemption_request['name']}; ?></option>
+									<?php } ?>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-sm-2 control-label" for="input-advanced-debug"><?php echo $entry_debug; ?></label>
 							<div class="col-sm-10">
 								<select name="worldline_setting[advanced][debug]" id="input-advanced-debug" class="form-control">

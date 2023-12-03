@@ -93,7 +93,9 @@
 							<div class="col-sm-10">
 								<div class="input-group">
 									<input type="text" name="worldline_setting[account][api_endpoint][<?php echo $environment['code']; ?>]" value="<?php echo $setting['account']['api_endpoint'][$environment['code']]; ?>" id="input-api-endpoint<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
-									<span class="input-group-addon"><a class="reset-api-endpoint" role="button" data-toggle="tooltip" title="<?php echo $button_reset_api_endpoint; ?>" api_endpoint="<?php echo $setting['environment'][$environment['code']]['api_endpoint']; ?>" field_id="input-api-endpoint<?php echo str_replace('_', '-', $environment['prefix']); ?>"><i class="fa fa-undo"></i></a></span>
+									<span class="input-group-btn">
+										<button type="button" data-toggle="tooltip" title="<?php echo $button_reset_api_endpoint; ?>" class="btn btn-default reset-api-endpoint" api_endpoint="<?php echo $setting['environment'][$environment['code']]['api_endpoint']; ?>" field_id="input-api-endpoint<?php echo str_replace('_', '-', $environment['prefix']); ?>"><i class="fa fa-undo"></i></button>
+									</span>
 								</div>
 							</div>
 						</div>
@@ -120,7 +122,9 @@
                                 <input type="hidden" name="worldline_setting[account][webhook_token]" value="<?php echo $setting['account']['webhook_token']; ?>" />
 								<div class="input-group">
 									<input type="text" value="<?php echo $webhook_url; ?>" readonly="readonly" id="input-webhook-url" class="form-control" />
-									<span class="input-group-addon"><a class="copy-webhook-url" role="button" data-toggle="tooltip" title="<?php echo $button_copy_url; ?>" field_id="input-webhook-url"><i class="fa fa-clipboard"></i></a></span>
+									<span class="input-group-btn">
+										<button type="button" data-toggle="tooltip" title="<?php echo $button_copy_url; ?>" class="btn btn-default copy-webhook-url" field_id="input-webhook-url"><i class="fa fa-clipboard"></i></button>
+									</span>
 								</div>
                             </div>
                         </div>
@@ -130,7 +134,9 @@
 								<input type="hidden" name="worldline_setting[account][cron_token]" value="<?php echo $setting['account']['cron_token']; ?>" />
 								<div class="input-group">
 									<input type="text" value="<?php echo $cron_url; ?>" readonly="readonly" id="input-cron-url" class="form-control" />
-									<span class="input-group-addon"><a class="copy-cron-url" role="button" data-toggle="tooltip" title="<?php echo $button_copy_url; ?>" field_id="input-cron-url"><i class="fa fa-clipboard"></i></a></span>
+									<span class="input-group-btn">
+										<button type="button" data-toggle="tooltip" title="<?php echo $button_copy_url; ?>" class="btn btn-default copy-cron-url" field_id="input-cron-url"><i class="fa fa-clipboard"></i></button>
+									</span>
 								</div>
 							</div>
 						</div>
