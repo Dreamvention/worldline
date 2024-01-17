@@ -86,7 +86,7 @@ Captures and refunds of authorizations are standard processes (maintenance opera
 | Order status | Available buttons                                                                             |
 |--------------|-----------------------------------------------------------------------------------------------|
 | Completed    | "Worldline Capture Payment": Capture the authorized amount to receive the funds for the order |
-|              | "Refund": Cancel the authorized amount                                                        |
+|              | "Refund": Cancel the authorized amount (Due to the limitations of the platform, only a full refund is possible.)                                                       |
 | Processing   | "Refund": Reimburse the funds for the order                                                   |
 
 ### Perform test transactions
