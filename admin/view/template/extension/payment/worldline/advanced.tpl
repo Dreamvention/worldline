@@ -90,31 +90,65 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-2 control-label" for="input-challenge-indicator"><?php echo $entry_challenge_indicator; ?></label>
+							<label class="col-sm-2 control-label" for="input-forced-tokenization"><?php echo $entry_forced_tokenization; ?></label>
 							<div class="col-sm-10">
-								<select name="worldline_setting[advanced][challenge_indicator]" id="input-challenge-indicator" class="form-control">
-									<?php foreach ($setting['challenge_indicator'] as $challenge_indicator) { ?>
-									<?php if ($challenge_indicator['code'] == $setting['advanced']['challenge_indicator']) { ?>
-									<option value="<?php echo $challenge_indicator['code']; ?>" selected="selected"><?php echo ${$challenge_indicator['name']}; ?></option>
+								<select name="worldline_setting[advanced][forced_tokenization]" id="input-forced-tokenization" class="form-control">
+									<?php if ($setting['advanced']['forced_tokenization']) { ?>
+									<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+									<option value="0"><?php echo $text_disabled; ?></option>
 									<?php } else { ?>
-									<option value="<?php echo $challenge_indicator['code']; ?>"><?php echo ${$challenge_indicator['name']}; ?></option>
+									<option value="1"><?php echo $text_enabled; ?></option>
+									<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label" for="input-tds-status"><?php echo $entry_tds_status; ?></label>
+							<div class="col-sm-10">
+								<select name="worldline_setting[advanced][tds_status]" id="input-tds-status" class="form-control">
+									<?php if ($setting['advanced']['tds_status']) { ?>
+									<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+									<option value="0"><?php echo $text_disabled; ?></option>
+									<?php } else { ?>
+									<option value="1"><?php echo $text_enabled; ?></option>
+									<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label" for="input-tds-challenge-indicator"><?php echo $entry_tds_challenge_indicator; ?></label>
+							<div class="col-sm-10">
+								<select name="worldline_setting[advanced][tds_challenge_indicator]" id="input-tds-challenge-indicator" class="form-control">
+									<?php foreach ($setting['tds_challenge_indicator'] as $tds_challenge_indicator) { ?>
+									<?php if ($tds_challenge_indicator['code'] == $setting['advanced']['tds_challenge_indicator']) { ?>
+									<option value="<?php echo $tds_challenge_indicator['code']; ?>" selected="selected"><?php echo ${$tds_challenge_indicator['name']}; ?></option>
+									<?php } else { ?>
+									<option value="<?php echo $tds_challenge_indicator['code']; ?>"><?php echo ${$tds_challenge_indicator['name']}; ?></option>
 									<?php } ?>
 									<?php } ?>
 								</select>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-2 control-label" for="input-exemption-request"><?php echo $entry_exemption_request; ?></label>
+							<label class="col-sm-2 control-label" for="input-tds-exemption-request"><?php echo $entry_tds_exemption_request; ?></label>
 							<div class="col-sm-10">
-								<select name="worldline_setting[advanced][exemption_request]" id="input-exemption-request" class="form-control">
-									<?php foreach ($setting['exemption_request'] as $exemption_request) { ?>
-									<?php if ($exemption_request['code'] == $setting['advanced']['exemption_request']) { ?>
-									<option value="<?php echo $exemption_request['code']; ?>" selected="selected"><?php echo ${$exemption_request['name']}; ?></option>
+								<select name="worldline_setting[advanced][tds_exemption_request]" id="input-tds-exemption-request" class="form-control">
+									<?php foreach ($setting['tds_exemption_request'] as $tds_exemption_request) { ?>
+									<?php if ($tds_exemption_request['code'] == $setting['advanced']['tds_exemption_request']) { ?>
+									<option value="<?php echo $tds_exemption_request['code']; ?>" selected="selected"><?php echo ${$tds_exemption_request['name']}; ?></option>
 									<?php } else { ?>
-									<option value="<?php echo $exemption_request['code']; ?>"><?php echo ${$exemption_request['name']}; ?></option>
+									<option value="<?php echo $tds_exemption_request['code']; ?>"><?php echo ${$tds_exemption_request['name']}; ?></option>
 									<?php } ?>
 									<?php } ?>
 								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label" for="input-template"><span data-toggle="tooltip" title="<?php echo $help_template; ?>"><?php echo $entry_template; ?></span></label>
+							<div class="col-sm-10">
+								<input type="text" name="worldline_setting[advanced][template]" value="<?php echo $setting['advanced']['template']; ?>" placeholder="<?php echo $entry_template; ?>" id="input-template" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group">

@@ -1,7 +1,60 @@
 <?php
 class ModelExtensionPaymentWorldline extends Model {
 					
-	public function updateOrder($data) {
+	public function addWorldlineCustomerToken($data) {
+		$sql = "INSERT INTO `" . DB_PREFIX . "worldline_customer_token` SET";
+
+		$implode = array();
+			
+		if (!empty($data['customer_id'])) {
+			$implode[] .= "`customer_id` = '" . (int)$data['customer_id'] . "'";
+		}
+		
+		if (!empty($data['payment_type'])) {
+			$implode[] .= "`payment_type` = '" . $this->db->escape($data['payment_type']) . "'";
+		}
+		
+		if (!empty($data['token'])) {
+			$implode[] .= "`token` = '" . $this->db->escape($data['token']) . "'";
+		}
+				
+		if ($implode) {
+			$sql .= implode(", ", $implode);
+		}
+		
+		$this->db->query($sql);
+	}
+	
+	public function deleteWorldlineCustomerTokens($customer_id) {
+		$query = $this->db->query("DELETE FROM `" . DB_PREFIX . "worldline_customer` WHERE `customer_id` = '" . (int)$customer_id . "'");
+	}
+	
+	public function setWorldlineCustomerMainToken($customer_id, $payment_type, $token) {
+		$this->db->query("UPDATE `" . DB_PREFIX . "worldline_customer_token` SET `main_token_status` = '0' WHERE `customer_id` = '" . (int)$customer_id . "' AND `payment_type` = '" . $this->db->escape($payment_type) . "'");
+		$this->db->query("UPDATE `" . DB_PREFIX . "worldline_customer_token` SET `main_token_status` = '1' WHERE `customer_id` = '" . (int)$customer_id . "' AND `payment_type` = '" . $this->db->escape($payment_type) . "' AND `token` = '" . $this->db->escape($token) . "'");
+	}
+	
+	public function getWorldlineCustomerToken($customer_id, $payment_type, $token) {
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "worldline_customer_token` WHERE `customer_id` = '" . (int)$customer_id . "' AND `payment_type` = '" . $this->db->escape($payment_type) . "' AND `token` = '" . $this->db->escape($token) . "'");
+
+		if ($query->num_rows) {
+			return $query->row;
+		} else {
+			return array();
+		}
+	}
+	
+	public function getWorldlineCustomerTokens($customer_id) {
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "worldline_customer_token` WHERE `customer_id` = '" . (int)$customer_id . "'");
+
+		if ($query->num_rows) {
+			return $query->rows;
+		} else {
+			return array();
+		}
+	}
+
+	public function editWorldlineOrder($data) {
 		$sql = "UPDATE `" . DB_PREFIX . "worldline_order` SET";
 
 		$implode = array();
@@ -16,6 +69,14 @@ class ModelExtensionPaymentWorldline extends Model {
 		
 		if (!empty($data['payment_product'])) {
 			$implode[] .= "`payment_product` = '" . $this->db->escape($data['payment_product']) . "'";
+		}
+		
+		if (!empty($data['payment_type'])) {
+			$implode[] .= "`payment_type` = '" . $this->db->escape($data['payment_type']) . "'";
+		}
+		
+		if (!empty($data['token'])) {
+			$implode[] .= "`token` = '" . $this->db->escape($data['token']) . "'";
 		}
 		
 		if (!empty($data['total'])) {
@@ -49,11 +110,11 @@ class ModelExtensionPaymentWorldline extends Model {
 		$this->db->query($sql);
 	}
 		
-	public function deleteOrder($order_id) {
+	public function deleteWorldlineOrder($order_id) {
 		$query = $this->db->query("DELETE FROM `" . DB_PREFIX . "worldline_order` WHERE `order_id` = '" . (int)$order_id . "'");
 	}
 	
-	public function getOrder($order_id) {
+	public function getWorldlineOrder($order_id) {
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "worldline_order` WHERE `order_id` = '" . (int)$order_id . "'");
 		
 		if ($query->num_rows) {
@@ -63,8 +124,8 @@ class ModelExtensionPaymentWorldline extends Model {
 		}
 	}
 	
-	public function getOrders($data = array()) {
-		$sql = "SELECT wo.order_id, wo.transaction_id, wo.transaction_status, wo.payment_product, wo.total, wo.amount, wo.currency_code, wo.date, wo.environment FROM `" . DB_PREFIX . "worldline_order` wo";
+	public function getWorldlineOrders($data = array()) {
+		$sql = "SELECT wo.order_id, wo.transaction_id, wo.transaction_status, wo.payment_product, wo.payment_type, wo.token, wo.total, wo.amount, wo.currency_code, wo.date, wo.environment FROM `" . DB_PREFIX . "worldline_order` wo";
 
 		$implode = array();
 			
@@ -82,6 +143,14 @@ class ModelExtensionPaymentWorldline extends Model {
 		
 		if (isset($data['filter_payment_product'])) {
 			$implode[] .= "wo.payment_product LIKE '%" . $this->db->escape($data['filter_payment_product']) . "%'";
+		}
+		
+		if (isset($data['filter_payment_type'])) {
+			$implode[] .= "wo.payment_type = '" . $this->db->escape($data['filter_payment_type']) . "'";
+		}
+		
+		if (isset($data['filter_token'])) {
+			$implode[] .= "wo.token = '" . $this->db->escape($data['filter_token']) . "'";
 		}
 		
 		if (!empty($data['filter_total'])) {
@@ -118,6 +187,8 @@ class ModelExtensionPaymentWorldline extends Model {
 			'wo.transaction_id',
 			'wo.transaction_status',
 			'wo.payment_product',
+			'wo.payment_type',
+			'wo.token',
 			'wo.total',
 			'wo.amount',
 			'wo.currency_code',
@@ -154,7 +225,7 @@ class ModelExtensionPaymentWorldline extends Model {
 		return $query->rows;
 	}
 	
-	public function getTotalOrders($data = array()) {
+	public function getTotalWorldlineOrders($data = array()) {
 		$sql = "SELECT COUNT(DISTINCT order_id) AS total FROM `" . DB_PREFIX . "worldline_order` wo";
 
 		$implode = array();
@@ -173,6 +244,14 @@ class ModelExtensionPaymentWorldline extends Model {
 		
 		if (isset($data['filter_payment_product'])) {
 			$implode[] .= "wo.payment_product LIKE '%" . $this->db->escape($data['filter_payment_product']) . "%'";
+		}
+		
+		if (isset($data['filter_payment_type'])) {
+			$implode[] .= "wo.payment_type = '" . $this->db->escape($data['filter_payment_type']) . "'";
+		}
+		
+		if (isset($data['filter_token'])) {
+			$implode[] .= "wo.token = '" . $this->db->escape($data['filter_token']) . "'";
 		}
 		
 		if (!empty($data['filter_total'])) {
@@ -289,10 +368,12 @@ class ModelExtensionPaymentWorldline extends Model {
 	}
 	
 	public function install() {
-		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "worldline_order` (`order_id` INT(11) NOT NULL, `transaction_id` VARCHAR(20) NOT NULL, `transaction_status` VARCHAR(20) NULL, `payment_product` VARCHAR(40) NULL, `total` DECIMAL(15,2) NULL, `amount` DECIMAL(15,2) NULL, `currency_code` VARCHAR(3) NULL, `country_code` VARCHAR(2) NULL, `environment` VARCHAR(20) NULL, `date` DATETIME NULL, PRIMARY KEY (`order_id`, `transaction_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "worldline_customer_token` (`customer_id` INT(11) NOT NULL, `payment_type` VARCHAR(20) NOT NULL, `token` VARCHAR(50) NOT NULL, `main_token_status` TINYINT(1) NOT NULL, PRIMARY KEY (`customer_id`, `payment_type`, `token`), KEY `main_token_status` (`main_token_status`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "worldline_order` (`order_id` INT(11) NOT NULL, `transaction_id` VARCHAR(20) NOT NULL, `transaction_status` VARCHAR(20) NULL, `payment_product` VARCHAR(40) NULL, `payment_type` VARCHAR(20) NOT NULL, `token` VARCHAR(50), `total` DECIMAL(15,2) NULL, `amount` DECIMAL(15,2) NULL, `currency_code` VARCHAR(3) NULL, `country_code` VARCHAR(2) NULL, `environment` VARCHAR(20) NULL, `date` DATETIME NULL, PRIMARY KEY (`order_id`), KEY `transaction_id` (`transaction_id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 	}
 	
 	public function uninstall() {
+		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "worldline_customer_token`");
 		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "worldline_order`");
 	}
 }
