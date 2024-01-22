@@ -73,7 +73,7 @@
 							<label class="col-sm-2 col-form-label" for="input-api-key{{ environment['prefix']|replace({'_': '-'}) }}">{{ attribute(_context, 'entry_api_key' ~ environment['prefix']) }}</label>
 							<div class="col-sm-10">
 								<div class="input-group">
-									<input type="text" name="payment_worldline_setting[account][api_key][{{ environment['code'] }}]" value="{% if setting['account']['api_key'][environment['code']] %}{{ setting['account']['api_key'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_api_key' ~ environment['prefix']) }}" id="input-api-key{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
+									<input type="password" name="payment_worldline_setting[account][api_key][{{ environment['code'] }}]" value="{% if setting['account']['api_key'][environment['code']] %}{{ setting['account']['api_key'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_api_key' ~ environment['prefix']) }}" id="input-api-key{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
 									<div id="error-api-key{{ environment['prefix']|replace({'_': '-'}) }}" class="invalid-feedback"></div>
 								</div>
 							</div>
@@ -82,7 +82,7 @@
 							<label class="col-sm-2 col-form-label" for="input-api-secret{{ environment['prefix']|replace({'_': '-'}) }}">{{ attribute(_context, 'entry_api_secret' ~ environment['prefix']) }}</label>
 							<div class="col-sm-10">
 								<div class="input-group">
-									<textarea name="payment_worldline_setting[account][api_secret][{{ environment['code'] }}]" placeholder="{{ attribute(_context, 'entry_api_secret' ~ environment['prefix']) }}" id="input-api-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control">{% if setting['account']['api_secret'][environment['code']] %}{{ setting['account']['api_secret'][environment['code']] }}{% endif %}</textarea>
+									<input type="password" name="payment_worldline_setting[account][api_secret][{{ environment['code'] }}]" value="{% if setting['account']['api_secret'][environment['code']] %}{{ setting['account']['api_secret'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_api_secret' ~ environment['prefix']) }}" id="input-api-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
 									<div id="error-api-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="invalid-feedback"></div>
 								</div>
 							</div>
@@ -104,7 +104,7 @@
 							<label class="col-sm-2 col-form-label" for="input-webhook-key{{ environment['prefix']|replace({'_': '-'}) }}">{{ attribute(_context, 'entry_webhook_key' ~ environment['prefix']) }}</label>
 							<div class="col-sm-10">
 								<div class="input-group">
-									<input type="text" name="payment_worldline_setting[account][webhook_key][{{ environment['code'] }}]" value="{% if setting['account']['webhook_key'][environment['code']] %}{{ setting['account']['webhook_key'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_webhook_key' ~ environment['prefix']) }}" id="input-webhook-key{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
+									<input type="password" name="payment_worldline_setting[account][webhook_key][{{ environment['code'] }}]" value="{% if setting['account']['webhook_key'][environment['code']] %}{{ setting['account']['webhook_key'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_webhook_key' ~ environment['prefix']) }}" id="input-webhook-key{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
 									<div id="error-webhook-key{{ environment['prefix']|replace({'_': '-'}) }}" class="invalid-feedback"></div>
 								</div>
 							</div>
@@ -113,7 +113,7 @@
 							<label class="col-sm-2 col-form-label" for="input-webhook-secret{{ environment['prefix']|replace({'_': '-'}) }}">{{ attribute(_context, 'entry_webhook_secret' ~ environment['prefix']) }}</label>
 							<div class="col-sm-10">
 								<div class="input-group">
-									<textarea name="payment_worldline_setting[account][webhook_secret][{{ environment['code'] }}]" placeholder="{{ attribute(_context, 'entry_webhook_secret' ~ environment['prefix']) }}" id="input-webhook-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control">{% if setting['account']['webhook_secret'][environment['code']] %}{{ setting['account']['webhook_secret'][environment['code']] }}{% endif %}</textarea>
+									<input type="password" name="payment_worldline_setting[account][webhook_secret][{{ environment['code'] }}]" value="{% if setting['account']['webhook_secret'][environment['code']] %}{{ setting['account']['webhook_secret'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_webhook_secret' ~ environment['prefix']) }}" id="input-webhook-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
 									<div id="error-webhook-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="invalid-feedback"></div>
 								</div>
 							</div>

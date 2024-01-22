@@ -66,8 +66,6 @@ class Worldline extends \Opencart\System\Engine\Controller {
 		$api_secret = $setting['account']['api_secret'][$environment];
 		$api_endpoint = $setting['account']['api_endpoint'][$environment];
 		$authorization_mode = strtoupper($setting['advanced']['authorization_mode']);
-		$challenge_indicator = $setting['advanced']['challenge_indicator'];
-		$exemption_request = $setting['advanced']['exemption_request'];
 		
 		$language_code = explode('-', $this->config->get('config_language'));
 		$language_code = strtoupper(reset($language_code));
@@ -275,6 +273,16 @@ class Worldline extends \Opencart\System\Engine\Controller {
 			$item_total += $shipping_total;
 		}
 		
+		$tokens = [];
+		
+		if ($this->customer->isLogged()) {
+			$worldline_customer_tokens = $this->model_extension_worldline_payment_worldline->getWorldlineCustomerTokens($this->customer->getId());
+			
+			foreach ($worldline_customer_tokens as $worldline_customer_token) {
+				$tokens[] = $worldline_customer_token['token'];
+			}
+		}
+		
 		$order_references = new \OnlinePayments\Sdk\Domain\OrderReferences();
 		$order_references->setMerchantReference($order_info['order_id'] . '_' . date('Ymd_His'));
  
@@ -297,9 +305,20 @@ class Worldline extends \Opencart\System\Engine\Controller {
 						
 		$card_payment_method_specific_input = new \OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput();
 		$card_payment_method_specific_input->setAuthorizationMode($authorization_mode);
-		$card_payment_method_specific_input->setSkipAuthentication(false);
-		$card_payment_method_specific_input->setThreeDSecure($three_d_secure);
 		$card_payment_method_specific_input->setTransactionChannel('ECOMMERCE');
+		
+		if ($setting['advanced']['tds_status']) {
+			$card_payment_method_specific_input->setSkipAuthentication(false);
+			$card_payment_method_specific_input->setThreeDSecure($three_d_secure);
+		} else {
+			$card_payment_method_specific_input->setSkipAuthentication(true);
+		}
+				
+		if ($setting['advanced']['forced_tokenization']) {
+			$card_payment_method_specific_input->setTokenize(true);
+		} else {
+			$card_payment_method_specific_input->setTokenize(false);
+		}
 						
 		$redirect_payment_method_specific_input = new \OnlinePayments\Sdk\Domain\RedirectPaymentMethodSpecificInput();
 		
@@ -307,6 +326,12 @@ class Worldline extends \Opencart\System\Engine\Controller {
 			$redirect_payment_method_specific_input->setRequiresApproval(false);
 		} else {
 			$redirect_payment_method_specific_input->setRequiresApproval(true);
+		}
+		
+		if ($this->customer->isLogged() && $setting['advanced']['forced_tokenization']) {
+			$redirect_payment_method_specific_input->setTokenize(true);
+		} else {
+			$redirect_payment_method_specific_input->setTokenize(false);
 		}
 				
 		$mobile_payment_method_specific_input = new \OnlinePayments\Sdk\Domain\MobilePaymentMethodSpecificInput();
@@ -319,6 +344,14 @@ class Worldline extends \Opencart\System\Engine\Controller {
 		$hosted_checkout_specific_input->setLocale($language_code . '-' . strtoupper($language_code));
 		$hosted_checkout_specific_input->setReturnUrl(str_replace('&amp;', '&', $this->url->link('extension/worldline/payment/worldline' . $this->separator . 'callback', 'language=' . $this->config->get('config_language'))));
 		$hosted_checkout_specific_input->setCardPaymentMethodSpecificInput($card_payment_method_specific_input_for_hosted_checkout);
+		
+		if ($setting['advanced']['template']) {
+			$hosted_checkout_specific_input->setVariant($setting['advanced']['template']);
+		}
+		
+		if ($tokens) {
+			$hosted_checkout_specific_input->setTokens(implode(',', $tokens));
+		}
 
         $create_hosted_checkout_request = new \OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest();
 		$create_hosted_checkout_request->setOrder($order);
@@ -355,9 +388,9 @@ class Worldline extends \Opencart\System\Engine\Controller {
 			$hosted_checkout_id = $create_hosted_checkout_response->getHostedCheckoutId();
 			$hosted_checkout_url = $create_hosted_checkout_response->getRedirectUrl();
 			
-			$this->model_extension_worldline_payment_worldline->deleteOrder($order_id);
+			$this->model_extension_worldline_payment_worldline->deleteWorldlineOrder($order_id);
 										
-			$worldline_data = [
+			$worldline_order_data = [
 				'order_id' => $order_id,
 				'transaction_id' => $hosted_checkout_id,
 				'total' => ($order_info['total'] * $currency_value),
@@ -366,7 +399,7 @@ class Worldline extends \Opencart\System\Engine\Controller {
 				'environment' => $environment
 			];
 
-			$this->model_extension_worldline_payment_worldline->createOrder($worldline_data);
+			$this->model_extension_worldline_payment_worldline->addWorldlineOrder($worldline_order_data);
 			
 			$data['redirect'] = $hosted_checkout_url;
 		}
@@ -429,9 +462,13 @@ class Worldline extends \Opencart\System\Engine\Controller {
 					$currency_code = $hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode();
 					
 					$payment_product_id = '';
+					$payment_type = '';
+					$token = '';
 										
 					if (!empty($hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getCardPaymentMethodSpecificOutput())) {
 						$payment_product_id = $hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getPaymentProductId();
+						$token = $hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getToken();
+						$payment_type = 'card';
 					}
 				
 					if (!empty($hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getMobilePaymentMethodSpecificOutput())) {
@@ -440,6 +477,8 @@ class Worldline extends \Opencart\System\Engine\Controller {
 				
 					if (!empty($hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput())) {
 						$payment_product_id = $hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getPaymentProductId();
+						$token = $hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getToken();
+						$payment_type = 'redirect';
 					}
 				
 					if (!empty($hosted_checkout_response->getCreatedPaymentOutput()->getPayment()->getPaymentOutput()->getSepaDirectDebitPaymentMethodSpecificOutput())) {
@@ -451,7 +490,7 @@ class Worldline extends \Opencart\System\Engine\Controller {
 					
 					$this->load->model('extension/worldline/payment/worldline');
 					
-					$worldline_order_info = $this->model_extension_worldline_payment_worldline->getOrder($order_id);
+					$worldline_order_info = $this->model_extension_worldline_payment_worldline->getWorldlineOrder($order_id);
 					
 					if ($worldline_order_info) {
 						$order_status_id = 0;
@@ -521,16 +560,36 @@ class Worldline extends \Opencart\System\Engine\Controller {
 								}
 							}
 							
-							$worldline_data = [
+							$worldline_order_data = [
 								'order_id' => $order_id,
 								'transaction_status' => $transaction_status,
 								'payment_product' => $payment_product,
+								'payment_type' => $payment_type,
+								'token' => $token,
 								'total' => $total,
 								'amount' => $amount,
 								'currency_code' => $currency_code
 							];
 							
-							$this->model_extension_worldline_payment_worldline->updateOrder($worldline_data);
+							$this->model_extension_worldline_payment_worldline->editWorldlineOrder($worldline_order_data);
+							
+							if ($this->customer->isLogged() && $token) {
+								$customer_id = $this->customer->getId();
+								
+								$worldline_customer_token_info = $this->model_extension_worldline_payment_worldline->getWorldlineCustomerToken($customer_id, $payment_type, $token);
+								
+								if (!$worldline_customer_token_info) {
+									$worldline_customer_token_data = [
+										'customer_id' => $customer_id,
+										'payment_type' => $payment_type,
+										'token' => $token
+									];
+									
+									$this->model_extension_worldline_payment_worldline->addWorldlineCustomerToken($worldline_customer_token_data);
+								}
+								
+								$this->model_extension_worldline_payment_worldline->setWorldlineCustomerMainToken($customer_id, $payment_type, $token);	
+							}
 						}
 						
 						if (($transaction_status == 'pending_capture') || ($transaction_status == 'captured')) {
@@ -660,7 +719,7 @@ class Worldline extends \Opencart\System\Engine\Controller {
 			
 			$this->load->model('extension/worldline/payment/worldline');
 			
-			$worldline_order_info = $this->model_extension_worldline_payment_worldline->getOrder($order_id);
+			$worldline_order_info = $this->model_extension_worldline_payment_worldline->getWorldlineOrder($order_id);
 					
 			if ($worldline_order_info) {
 				$transaction_id = $worldline_order_info['transaction_id'];
@@ -690,7 +749,7 @@ class Worldline extends \Opencart\System\Engine\Controller {
 			
 			$this->load->model('extension/worldline/payment/worldline');
 			
-			$worldline_order_info = $this->model_extension_worldline_payment_worldline->getOrder($order_id);
+			$worldline_order_info = $this->model_extension_worldline_payment_worldline->getWorldlineOrder($order_id);
 					
 			if ($worldline_order_info) {
 				$transaction_id = $worldline_order_info['transaction_id'];
@@ -759,9 +818,13 @@ class Worldline extends \Opencart\System\Engine\Controller {
 						$currency_code = $payment_response->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode();
 						
 						$payment_product_id = '';
+						$payment_type = '';
+						$token = '';
 											
 						if (!empty($payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput())) {
 							$payment_product_id = $payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getPaymentProductId();
+							$token = $payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getToken();
+							$payment_type = 'card';
 						}
 				
 						if (!empty($payment_response->getPaymentOutput()->getMobilePaymentMethodSpecificOutput())) {
@@ -770,6 +833,8 @@ class Worldline extends \Opencart\System\Engine\Controller {
 				
 						if (!empty($payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput())) {
 							$payment_product_id = $payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getPaymentProductId();
+							$token = $payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getToken();
+							$payment_type = 'redirect';
 						}
 				
 						if (!empty($payment_response->getPaymentOutput()->getSepaDirectDebitPaymentMethodSpecificOutput())) {
@@ -843,16 +908,36 @@ class Worldline extends \Opencart\System\Engine\Controller {
 								}
 							}
 							
-							$worldline_data = [
+							$worldline_order_data = [
 								'order_id' => $order_id,
 								'transaction_status' => $transaction_status,
 								'payment_product' => $payment_product,
+								'payment_type' => $payment_type,
+								'token' => $token,
 								'total' => $total,
 								'amount' => $amount,
 								'currency_code' => $currency_code
 							];
-														
-							$this->model_extension_worldline_payment_worldline->updateOrder($worldline_data);
+							
+							$this->model_extension_worldline_payment_worldline->editWorldlineOrder($worldline_order_data);
+							
+							if ($this->customer->isLogged() && $token) {
+								$customer_id = $this->customer->getId();
+								
+								$worldline_customer_token_info = $this->model_extension_worldline_payment_worldline->getWorldlineCustomerToken($customer_id, $payment_type, $token);
+								
+								if (!$worldline_customer_token_info) {
+									$worldline_customer_token_data = [
+										'customer_id' => $customer_id,
+										'payment_type' => $payment_type,
+										'token' => $token
+									];
+									
+									$this->model_extension_worldline_payment_worldline->addWorldlineCustomerToken($worldline_customer_token_data);
+								}
+								
+								$this->model_extension_worldline_payment_worldline->setWorldlineCustomerMainToken($customer_id, $payment_type, $token);	
+							}
 						}
 						
 						if (($transaction_status == 'pending_capture') || ($transaction_status == 'captured')) {
@@ -893,6 +978,7 @@ class Worldline extends \Opencart\System\Engine\Controller {
 				$this->load->language('extension/worldline/payment/worldline');
 		
 				$this->load->model('extension/worldline/payment/worldline');
+				$this->load->model('checkout/order');
 		
 				$this->model_extension_worldline_payment_worldline->log($webhook_info, 'Webhook');
 											
@@ -954,9 +1040,13 @@ class Worldline extends \Opencart\System\Engine\Controller {
 					$currency_code = $payment_response->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode();
 					
 					$payment_product_id = '';
+					$payment_type = '';
+					$token = '';
 											
 					if (!empty($payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput())) {
 						$payment_product_id = $payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getPaymentProductId();
+						$token = $payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getToken();
+						$payment_type = 'card';
 					}
 				
 					if (!empty($payment_response->getPaymentOutput()->getMobilePaymentMethodSpecificOutput())) {
@@ -965,6 +1055,8 @@ class Worldline extends \Opencart\System\Engine\Controller {
 				
 					if (!empty($payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput())) {
 						$payment_product_id = $payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getPaymentProductId();
+						$token = $payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getToken();
+						$payment_type = 'redirect';
 					}
 				
 					if (!empty($payment_response->getPaymentOutput()->getSepaDirectDebitPaymentMethodSpecificOutput())) {
@@ -977,9 +1069,10 @@ class Worldline extends \Opencart\System\Engine\Controller {
 					$payment_id = explode('_', $webhook_info['payment']['id']);
 					$transaction_id = reset($payment_id);
 					
-					$worldline_order_info = $this->model_extension_worldline_payment_worldline->getOrder($order_id);
+					$worldline_order_info = $this->model_extension_worldline_payment_worldline->getWorldlineOrder($order_id);
+					$order_info = $this->model_checkout_order->getOrder($order_id);
 					
-					if ($worldline_order_info && ($worldline_order_info['transaction_id'] == $transaction_id)) {
+					if ($worldline_order_info && ($worldline_order_info['transaction_id'] == $transaction_id) && $order_info) {
 						$order_status_id = 0;
 					
 						if ($transaction_status == 'created') {
@@ -1006,14 +1099,8 @@ class Worldline extends \Opencart\System\Engine\Controller {
 							$order_status_id = $setting['order_status']['refunded']['id'];
 						}
 					
-						if ($order_status_id) {										
-							$this->load->model('checkout/order');
-							
-							$order_info = $this->model_checkout_order->getOrder($order_id);
-								
-							if ($order_info && ($order_info['order_status_id'] != $order_status_id)) {
-								$this->model_checkout_order->addHistory($order_id, $order_status_id, '', true);
-							}
+						if ($order_status_id && ($order_info['order_status_id'] != $order_status_id)) {
+							$this->model_checkout_order->addHistory($order_id, $order_status_id, '', true);
 						}
 						
 						if (($transaction_status == 'created') || ($transaction_status == 'pending_capture') || ($transaction_status == 'captured') || ($transaction_status == 'cancelled') || ($transaction_status == 'rejected') || ($transaction_status == 'rejected_capture') || ($transaction_status == 'refunded') || ($transaction_status == 'authorization_requested') || ($transaction_status == 'capture_requested') || ($transaction_status == 'refund_requested')) {
@@ -1047,16 +1134,36 @@ class Worldline extends \Opencart\System\Engine\Controller {
 								}
 							}
 							
-							$worldline_data = [
+							$worldline_order_data = [
 								'order_id' => $order_id,
 								'transaction_status' => $transaction_status,
 								'payment_product' => $payment_product,
+								'payment_type' => $payment_type,
+								'token' => $token,
 								'total' => $total,
 								'amount' => $amount,
 								'currency_code' => $currency_code
 							];
 							
-							$this->model_extension_worldline_payment_worldline->updateOrder($worldline_data);
+							$this->model_extension_worldline_payment_worldline->editWorldlineOrder($worldline_order_data);
+							
+							if (!empty($order_info['customer_id']) && $token) {
+								$customer_id = $order_info['customer_id'];
+								
+								$worldline_customer_token_info = $this->model_extension_worldline_payment_worldline->getWorldlineCustomerToken($customer_id, $payment_type, $token);
+								
+								if (!$worldline_customer_token_info) {
+									$worldline_customer_token_data = [
+										'customer_id' => $customer_id,
+										'payment_type' => $payment_type,
+										'token' => $token
+									];
+									
+									$this->model_extension_worldline_payment_worldline->addWorldlineCustomerToken($worldline_customer_token_data);
+								}
+								
+								$this->model_extension_worldline_payment_worldline->setWorldlineCustomerMainToken($customer_id, $payment_type, $token);	
+							}
 						}
 					}
 				}
@@ -1082,10 +1189,11 @@ class Worldline extends \Opencart\System\Engine\Controller {
 			
 			if (hash_equals($setting['account']['cron_token'], $this->request->get['cron_token'])) {
 				$this->load->model('extension/worldline/payment/worldline');
+				$this->load->model('checkout/order');
 	
-				$waiting_orders = $this->model_extension_worldline_payment_worldline->getWaitingOrders();
+				$waiting_worldline_orders = $this->model_extension_worldline_payment_worldline->getWaitingWorldlineOrders();
 			
-				if ($waiting_orders) {
+				if ($waiting_worldline_orders) {
 					$environment = $setting['account']['environment'];
 					$merchant_id = $setting['account']['merchant_id'][$environment];
 					$api_key = $setting['account']['api_key'][$environment];
@@ -1103,9 +1211,11 @@ class Worldline extends \Opencart\System\Engine\Controller {
  
 					$client = new \OnlinePayments\Sdk\Client($communicator);
 
-					foreach ($waiting_orders as $waiting_order) {
-						$order_id = $waiting_order['order_id'];
-						$transaction_id = $waiting_order['transaction_id'];
+					foreach ($waiting_worldline_orders as $waiting_worldline_order) {
+						$order_id = $waiting_worldline_order['order_id'];
+						$transaction_id = $waiting_worldline_order['transaction_id'];
+						
+						$order_info = $this->model_checkout_order->getOrder($order_id);
 										
 						$errors = [];
 			
@@ -1121,16 +1231,20 @@ class Worldline extends \Opencart\System\Engine\Controller {
 							}
 						}
 			
-						if (!$errors) {
+						if ($order_info && !$errors) {
 							$transaction_status = strtolower($payment_response->getStatus());
 							$total = $payment_response->getPaymentOutput()->getAmountOfMoney()->getAmount() / 100;
 							$amount = $payment_response->getPaymentOutput()->getAcquiredAmount()->getAmount() / 100;
 							$currency_code = $payment_response->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode();
 							
 							$payment_product_id = '';
+							$payment_type = '';
+							$token = '';
 											
 							if (!empty($payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput())) {
 								$payment_product_id = $payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getPaymentProductId();
+								$token = $payment_response->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getToken();
+								$payment_type = 'card';
 							}
 				
 							if (!empty($payment_response->getPaymentOutput()->getMobilePaymentMethodSpecificOutput())) {
@@ -1139,6 +1253,8 @@ class Worldline extends \Opencart\System\Engine\Controller {
 				
 							if (!empty($payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput())) {
 								$payment_product_id = $payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getPaymentProductId();
+								$token = $payment_response->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getToken();
+								$payment_type = 'redirect';
 							}
 				
 							if (!empty($payment_response->getPaymentOutput()->getSepaDirectDebitPaymentMethodSpecificOutput())) {
@@ -1170,24 +1286,18 @@ class Worldline extends \Opencart\System\Engine\Controller {
 							if ($transaction_status == 'refunded') {
 								$order_status_id = $setting['order_status']['refunded']['id'];
 							}
-					
-							if ($order_status_id) {										
-								$this->load->model('checkout/order');
 							
-								$order_info = $this->model_checkout_order->getOrder($order_id);
-								
-								if ($order_info && ($order_info['order_status_id'] != $order_status_id)) {
-									$this->model_checkout_order->addHistory($order_id, $order_status_id, '', true);
-								}
+							if ($order_status_id && ($order_info['order_status_id'] != $order_status_id)) {
+								$this->model_checkout_order->addHistory($order_id, $order_status_id, '', true);
 							}
 						
 							if (($transaction_status == 'created') || ($transaction_status == 'pending_capture') || ($transaction_status == 'captured') || ($transaction_status == 'cancelled') || ($transaction_status == 'rejected') || ($transaction_status == 'rejected_capture') || ($transaction_status == 'refunded') || ($transaction_status == 'authorization_requested') || ($transaction_status == 'capture_requested') || ($transaction_status == 'refund_requested')) {
-								$payment_product = $waiting_order['payment_product'];
+								$payment_product = $waiting_worldline_order['payment_product'];
 							
-								if (!$waiting_order['transaction_status']) {
+								if (!$waiting_worldline_order['transaction_status']) {
 									$payment_product_params = new \OnlinePayments\Sdk\Merchant\Products\GetPaymentProductParams();
 									$payment_product_params->setCurrencyCode($currency_code);
-									$payment_product_params->setCountryCode($waiting_order['country_code']);							
+									$payment_product_params->setCountryCode($waiting_worldline_order['country_code']);						
 						
 									try {
 										$payment_product_response = $client->merchant($merchant_id)->products()->getPaymentProduct($payment_product_id, $payment_product_params);
@@ -1212,16 +1322,36 @@ class Worldline extends \Opencart\System\Engine\Controller {
 									}
 								}
 							
-								$worldline_data = [
+								$worldline_order_data = [
 									'order_id' => $order_id,
 									'transaction_status' => $transaction_status,
 									'payment_product' => $payment_product,
+									'payment_type' => $payment_type,
+									'token' => $token,
 									'total' => $total,
 									'amount' => $amount,
 									'currency_code' => $currency_code
 								];
 							
-								$this->model_extension_worldline_payment_worldline->updateOrder($worldline_data);
+								$this->model_extension_worldline_payment_worldline->editWorldlineOrder($worldline_order_data);
+							
+								if (!empty($order_info['customer_id']) && $token) {
+									$customer_id = $order_info['customer_id'];
+								
+									$worldline_customer_token_info = $this->model_extension_worldline_payment_worldline->getWorldlineCustomerToken($customer_id, $payment_type, $token);
+								
+									if (!$worldline_customer_token_info) {
+										$worldline_customer_token_data = [
+											'customer_id' => $customer_id,
+											'payment_type' => $payment_type,
+											'token' => $token
+										];
+									
+										$this->model_extension_worldline_payment_worldline->addWorldlineCustomerToken($worldline_customer_token_data);
+									}
+								
+									$this->model_extension_worldline_payment_worldline->setWorldlineCustomerMainToken($customer_id, $payment_type, $token);	
+								}
 							}
 						}
 					}
@@ -1239,7 +1369,7 @@ class Worldline extends \Opencart\System\Engine\Controller {
 
 		$order_id = $data[0];
 
-		$this->model_extension_worldline_payment_worldline->deleteOrder($order_id);
+		$this->model_extension_worldline_payment_worldline->deleteWorldlineOrder($order_id);
 	}
 	
 	private function getallheaders() {		

@@ -21,8 +21,11 @@ $_['worldline_setting'] = [
 		'debug' => false,
 		'authorization_mode' => 'sale',
 		'group_cards' => true,
-		'challenge_indicator' => 'challenge-required',
-		'exemption_request' => 'low-value'
+		'forced_tokenization' => true,
+		'tds_secure_status' => true,
+		'tds_challenge_indicator' => 'challenge-required',
+		'tds_exemption_request' => 'low-value',
+		'template' => ''
 	],
 	'order_status' => [
 		'created' => [
@@ -88,7 +91,7 @@ $_['worldline_setting'] = [
 			'name' => 'text_sale'
 		]
 	],
-	'challenge_indicator' => [
+	'tds_challenge_indicator' => [
 		'no-preference' => [
 			'code' => 'no-preference',
 			'name' => 'text_no_preference'
@@ -106,7 +109,7 @@ $_['worldline_setting'] = [
 			'name' => 'text_challenge_required'
 		]
 	],
-	'exemption_request' => [
+	'tds_exemption_request' => [
 		'none' => [
 			'code' => 'none',
 			'name' => 'text_exemption_none'
