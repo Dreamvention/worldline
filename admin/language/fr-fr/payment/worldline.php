@@ -23,7 +23,6 @@ $_['text_no_challenge_requested']				= 'Aucun défi demandé';
 $_['text_challenge_requested']					= 'Défi demandé';
 $_['text_challenge_required']					= 'Défi requis';
 $_['text_exemption_none']						= 'Aucun signalement d’exemption';
-$_['text_exemption_automatic']					= 'Meilleure exemption automatique possible';
 $_['text_exemption_transaction_risk_analysis']	= 'La transaction présente un faible risque';
 $_['text_exemption_low_value']					= 'La valeur de la transaction est inférieure à 30 EUR';
 $_['text_exemption_whitelist']					= 'Mis sur liste blanche par le client';

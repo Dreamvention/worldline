@@ -114,10 +114,6 @@ $_['worldline_setting'] = [
 			'code' => 'none',
 			'name' => 'text_exemption_none'
 		],
-		'automatic' => [
-			'code' => 'automatic',
-			'name' => 'text_exemption_automatic'
-		],
 		'transaction-risk-analysis' => [
 			'code' => 'transaction-risk-analysis',
 			'name' => 'text_exemption_transaction_risk_analysis'
