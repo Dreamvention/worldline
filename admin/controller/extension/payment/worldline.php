@@ -158,7 +158,6 @@ class ControllerExtensionPaymentWorldline extends Controller {
 		$data['text_challenge_requested'] = $this->language->get('text_challenge_requested');
 		$data['text_challenge_required'] = $this->language->get('text_challenge_required');
 		$data['text_exemption_none'] = $this->language->get('text_exemption_none');
-		$data['text_exemption_automatic'] = $this->language->get('text_exemption_automatic');
 		$data['text_exemption_transaction_risk_analysis'] = $this->language->get('text_exemption_transaction_risk_analysis');
 		$data['text_exemption_low_value'] = $this->language->get('text_exemption_low_value');
 		$data['text_exemption_whitelist'] = $this->language->get('text_exemption_whitelist');
