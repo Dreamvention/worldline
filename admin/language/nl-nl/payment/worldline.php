@@ -24,7 +24,6 @@ $_['text_no_challenge_requested']				= 'Geen uitdaging gevraagd';
 $_['text_challenge_requested']					= 'Uitdaging aangevraagd';
 $_['text_challenge_required']					= 'Uitdaging vereist';
 $_['text_exemption_none']						= 'Geen vrijstellingsmarkering';
-$_['text_exemption_automatic']					= 'Automatische best mogelijke vrijstelling';
 $_['text_exemption_transaction_risk_analysis']	= 'Transactie heeft een laag risico';
 $_['text_exemption_low_value']					= 'De waarde van de transactie bedraagt minder dan 30 EUR';
 $_['text_exemption_whitelist']					= 'Op de witte lijst gezet door de klant';

@@ -114,10 +114,6 @@ $_['worldline_setting'] = array(
 			'code' => 'none',
 			'name' => 'text_exemption_none'
 		),
-		'automatic' => array(
-			'code' => 'automatic',
-			'name' => 'text_exemption_automatic'
-		),
 		'transaction-risk-analysis' => array(
 			'code' => 'transaction-risk-analysis',
 			'name' => 'text_exemption_transaction_risk_analysis'
