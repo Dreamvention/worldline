@@ -33,6 +33,8 @@
 				<ul class="nav nav-tabs">
 					<li class="nav-tab"><a href="<?php echo $href_account; ?>" class="tab"><i class="fa fa-user"></i> <?php echo $text_tab_account; ?></a></li>
 					<li class="nav-tab"><a href="<?php echo $href_advanced; ?>" class="tab"><i class="fa fa-cogs"></i> <?php echo $text_tab_advanced; ?></a></li>
+					<li class="nav-tab"><a href="<?php echo $href_hosted_checkout; ?>" class="tab"><i class="fa fa-list-alt"></i> <?php echo $text_tab_hosted_checkout; ?></a></li>
+					<li class="nav-tab"><a href="<?php echo $href_hosted_tokenization; ?>" class="tab"><i class="fa fa-credit-card"></i> <?php echo $text_tab_hosted_tokenization; ?></a></li>
 					<li class="nav-tab active"><a href="<?php echo $href_order_status; ?>" class="tab"><i class="fa fa-shopping-cart"></i> <?php echo $text_tab_order_status; ?></a></li>
 					<li class="nav-tab"><a href="<?php echo $href_transaction; ?>" class="tab"><i class="fa fa-money"></i> <?php echo $text_tab_transaction; ?></a></li>
 					<li class="nav-tab"><a href="<?php echo $href_suggest; ?>" class="tab"><i class="fa fa-envelope-o"></i> <?php echo $text_tab_suggest; ?></a></li>
@@ -55,6 +57,21 @@
 							</div>
 						</div>
 						<?php } ?>
+						<div class="form-group">
+							<label class="col-sm-2 control-label" for="input-final-order-status"><span data-toggle="tooltip" title="<?php echo $help_final_order_status; ?>"><?php echo $entry_final_order_status; ?></span></label>
+							<div class="col-sm-10">
+								<div class="well well-sm" style="height: 150px; overflow: auto;">
+									<?php foreach ($order_statuses as $order_status) { ?>
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" name="worldline_setting[final_order_status][]" value="<?php echo $order_status['order_status_id']; ?>" <?php if (in_array($order_status['order_status_id'], $setting['final_order_status'])) { ?> checked="checked" <?php } ?> />
+											<?php echo $order_status['name']; ?>
+										</label>
+									</div>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
 					</form>
 				</div>
 			</div>
