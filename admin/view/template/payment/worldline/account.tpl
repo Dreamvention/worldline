@@ -33,6 +33,8 @@
 				<ul class="nav nav-tabs">
 					<li class="nav-tab active"><a href="<?php echo $href_account; ?>" class="tab"><i class="fa fa-user"></i> <?php echo $text_tab_account; ?></a></li>
 					<li class="nav-tab"><a href="<?php echo $href_advanced; ?>" class="tab"><i class="fa fa-cogs"></i> <?php echo $text_tab_advanced; ?></a></li>
+					<li class="nav-tab"><a href="<?php echo $href_hosted_checkout; ?>" class="tab"><i class="fa fa-list-alt"></i> <?php echo $text_tab_hosted_checkout; ?></a></li>
+					<li class="nav-tab"><a href="<?php echo $href_hosted_tokenization; ?>" class="tab"><i class="fa fa-credit-card"></i> <?php echo $text_tab_hosted_tokenization; ?></a></li>
 					<li class="nav-tab"><a href="<?php echo $href_order_status; ?>" class="tab"><i class="fa fa-shopping-cart"></i> <?php echo $text_tab_order_status; ?></a></li>
 					<li class="nav-tab"><a href="<?php echo $href_transaction; ?>" class="tab"><i class="fa fa-money"></i> <?php echo $text_tab_transaction; ?></a></li>
 					<li class="nav-tab"><a href="<?php echo $href_suggest; ?>" class="tab"><i class="fa fa-envelope-o"></i> <?php echo $text_tab_suggest; ?></a></li>
@@ -79,13 +81,23 @@
 						<div class="form-group required environment-<?php echo $environment['code']; ?> <?php if ($environment['code'] != $setting['account']['environment']) { ?>hidden<?php } ?>">
 							<label class="col-sm-2 control-label" for="input-api-key<?php echo str_replace('_', '-', $environment['prefix']); ?>"><?php echo ${'entry_api_key' . $environment['prefix']}; ?></label>
 							<div class="col-sm-10">
-								<input type="password" name="worldline_setting[account][api_key][<?php echo $environment['code']; ?>]" value="<?php if (!empty($setting['account']['api_key'][$environment['code']])) { ?><?php echo $setting['account']['api_key'][$environment['code']]; ?><?php } ?>" placeholder="<?php echo ${'entry_api_key' . $environment['prefix']}; ?>" id="input-api-key<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
+								<div class="input-group">
+									<input type="password" name="worldline_setting[account][api_key][<?php echo $environment['code']; ?>]" value="<?php if (!empty($setting['account']['api_key'][$environment['code']])) { ?><?php echo $setting['account']['api_key'][$environment['code']]; ?><?php } ?>" placeholder="<?php echo ${'entry_api_key' . $environment['prefix']}; ?>" id="input-api-key<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
+									<span class="input-group-btn">
+										<button type="button" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default view-password" field_id="input-api-key<?php echo str_replace('_', '-', $environment['prefix']); ?>"><i class="fa fa-eye"></i></button>
+									</span>
+								</div>
 							</div>
 						</div>
 						<div class="form-group required environment-<?php echo $environment['code']; ?> <?php if ($environment['code'] != $setting['account']['environment']) { ?>hidden<?php } ?>">
 							<label class="col-sm-2 control-label" for="input-api-secret<?php echo str_replace('_', '-', $environment['prefix']); ?>"><?php echo ${'entry_api_secret' . $environment['prefix']}; ?></label>
 							<div class="col-sm-10">
-								<input type="password" name="worldline_setting[account][api_secret][<?php echo $environment['code']; ?>]" value="<?php if (!empty($setting['account']['api_secret'][$environment['code']])) { ?><?php echo $setting['account']['api_secret'][$environment['code']]; ?><?php } ?>" placeholder="<?php echo ${'entry_api_secret' . $environment['prefix']}; ?>" id="input-api-secret<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
+								<div class="input-group">
+									<input type="password" name="worldline_setting[account][api_secret][<?php echo $environment['code']; ?>]" value="<?php if (!empty($setting['account']['api_secret'][$environment['code']])) { ?><?php echo $setting['account']['api_secret'][$environment['code']]; ?><?php } ?>" placeholder="<?php echo ${'entry_api_secret' . $environment['prefix']}; ?>" id="input-api-secret<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
+									<span class="input-group-btn">
+										<button type="button" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default view-password" field_id="input-api-secret<?php echo str_replace('_', '-', $environment['prefix']); ?>"><i class="fa fa-eye"></i></button>
+									</span>
+								</div>
 							</div>
 						</div>
 						<div class="form-group required environment-<?php echo $environment['code']; ?> <?php if ($environment['code'] != $setting['account']['environment']) { ?>hidden<?php } ?>">
@@ -106,13 +118,23 @@
 						<div class="form-group required environment-<?php echo $environment['code']; ?> <?php if ($environment['code'] != $setting['account']['environment']) { ?>hidden<?php } ?>">
 							<label class="col-sm-2 control-label" for="input-webhook-key<?php echo str_replace('_', '-', $environment['prefix']); ?>"><?php echo ${'entry_webhook_key' . $environment['prefix']}; ?></label>
 							<div class="col-sm-10">
-								<input type="password" name="worldline_setting[account][webhook_key][<?php echo $environment['code']; ?>]" value="<?php if (!empty($setting['account']['webhook_key'][$environment['code']])) { ?><?php echo $setting['account']['webhook_key'][$environment['code']]; ?><?php } ?>" placeholder="<?php echo ${'entry_webhook_key' . $environment['prefix']}; ?>" id="input-webhook-key<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
+								<div class="input-group">
+									<input type="password" name="worldline_setting[account][webhook_key][<?php echo $environment['code']; ?>]" value="<?php if (!empty($setting['account']['webhook_key'][$environment['code']])) { ?><?php echo $setting['account']['webhook_key'][$environment['code']]; ?><?php } ?>" placeholder="<?php echo ${'entry_webhook_key' . $environment['prefix']}; ?>" id="input-webhook-key<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
+									<span class="input-group-btn">
+										<button type="button" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default view-password" field_id="input-webhook-key<?php echo str_replace('_', '-', $environment['prefix']); ?>"><i class="fa fa-eye"></i></button>
+									</span>
+								</div>
 							</div>
 						</div>
 						<div class="form-group required environment-<?php echo $environment['code']; ?> <?php if ($environment['code'] != $setting['account']['environment']) { ?>hidden<?php } ?>">
 							<label class="col-sm-2 control-label" for="input-webhook-secret<?php echo str_replace('_', '-', $environment['prefix']); ?>"><?php echo ${'entry_webhook_secret' . $environment['prefix']}; ?></label>
 							<div class="col-sm-10">
-								<input type="password" name="worldline_setting[account][webhook_secret][<?php echo $environment['code']; ?>]" value="<?php if (!empty($setting['account']['webhook_secret'][$environment['code']])) { ?><?php echo $setting['account']['webhook_secret'][$environment['code']]; ?><?php } ?>" placeholder="<?php echo ${'entry_webhook_secret' . $environment['prefix']}; ?>" id="input-webhook-secret<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
+								<div class="input-group">
+									<input type="password" name="worldline_setting[account][webhook_secret][<?php echo $environment['code']; ?>]" value="<?php if (!empty($setting['account']['webhook_secret'][$environment['code']])) { ?><?php echo $setting['account']['webhook_secret'][$environment['code']]; ?><?php } ?>" placeholder="<?php echo ${'entry_webhook_secret' . $environment['prefix']}; ?>" id="input-webhook-secret<?php echo str_replace('_', '-', $environment['prefix']); ?>" class="form-control" />
+									<span class="input-group-btn">
+										<button type="button" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default view-password" field_id="input-webhook-secret<?php echo str_replace('_', '-', $environment['prefix']); ?>"><i class="fa fa-eye"></i></button>
+									</span>
+								</div>
 							</div>
 						</div>
 						<?php } ?>
@@ -158,6 +180,16 @@ $('#input-environment').on('change', function() {
 		$('.environment-test').removeClass('hidden');
 		$('.environment-live').addClass('hidden');
 	}	
+});
+
+$('#form-payment').delegate('.view-password', 'click', function(event) {
+	event.preventDefault();
+	
+	if ($('#' + $(this).attr('field_id')).attr('type') == 'password') {
+		$('#' + $(this).attr('field_id')).attr('type', 'text');
+	} else {
+		$('#' + $(this).attr('field_id')).attr('type', 'password');
+	}
 });
 
 $('#form-payment').delegate('.reset-api-endpoint', 'click', function(event) {
