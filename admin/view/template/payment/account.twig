@@ -26,6 +26,8 @@
 				<ul class="nav nav-tabs">
 					<li class="nav-item"><a href="{{ href_account }}" class="nav-link active"><i class="fas fa-user"></i> {{ text_tab_account }}</a></li>
 					<li class="nav-item"><a href="{{ href_advanced }}" class="nav-link"><i class="fas fa-cogs"></i> {{ text_tab_advanced }}</a></li>
+					<li class="nav-item"><a href="{{ href_hosted_checkout }}" class="nav-link"><i class="fas fa-list-alt"></i> {{ text_tab_hosted_checkout }}</a></li>
+					<li class="nav-item"><a href="{{ href_hosted_tokenization }}" class="nav-link"><i class="fas fa-credit-card"></i> {{ text_tab_hosted_tokenization }}</a></li>
 					<li class="nav-item"><a href="{{ href_order_status }}" class="nav-link"><i class="fas fa-shopping-cart"></i> {{ text_tab_order_status }}</a></li>
 					<li class="nav-item"><a href="{{ href_transaction }}" class="nav-link"><i class="fas fa-money-bill"></i> {{ text_tab_transaction }}</a></li>
 					<li class="nav-item"><a href="{{ href_suggest }}" class="nav-link"><i class="far fa-envelope"></i> {{ text_tab_suggest }}</a></li>
@@ -74,6 +76,7 @@
 							<div class="col-sm-10">
 								<div class="input-group">
 									<input type="password" name="payment_worldline_setting[account][api_key][{{ environment['code'] }}]" value="{% if setting['account']['api_key'][environment['code']] %}{{ setting['account']['api_key'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_api_key' ~ environment['prefix']) }}" id="input-api-key{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
+									<button type="button" data-bs-toggle="tooltip" title="{{ button_view }}" class="btn btn-light view-password" field_id="input-api-key{{ environment['prefix']|replace({'_': '-'}) }}"><i class="fas fa-eye"></i></button>
 									<div id="error-api-key{{ environment['prefix']|replace({'_': '-'}) }}" class="invalid-feedback"></div>
 								</div>
 							</div>
@@ -83,6 +86,7 @@
 							<div class="col-sm-10">
 								<div class="input-group">
 									<input type="password" name="payment_worldline_setting[account][api_secret][{{ environment['code'] }}]" value="{% if setting['account']['api_secret'][environment['code']] %}{{ setting['account']['api_secret'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_api_secret' ~ environment['prefix']) }}" id="input-api-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
+									<button type="button" data-bs-toggle="tooltip" title="{{ button_view }}" class="btn btn-light view-password" field_id="input-api-secret{{ environment['prefix']|replace({'_': '-'}) }}"><i class="fas fa-eye"></i></button>
 									<div id="error-api-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="invalid-feedback"></div>
 								</div>
 							</div>
@@ -105,6 +109,7 @@
 							<div class="col-sm-10">
 								<div class="input-group">
 									<input type="password" name="payment_worldline_setting[account][webhook_key][{{ environment['code'] }}]" value="{% if setting['account']['webhook_key'][environment['code']] %}{{ setting['account']['webhook_key'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_webhook_key' ~ environment['prefix']) }}" id="input-webhook-key{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
+									<button type="button" data-bs-toggle="tooltip" title="{{ button_view }}" class="btn btn-light view-password" field_id="input-webhook-key{{ environment['prefix']|replace({'_': '-'}) }}"><i class="fas fa-eye"></i></button>
 									<div id="error-webhook-key{{ environment['prefix']|replace({'_': '-'}) }}" class="invalid-feedback"></div>
 								</div>
 							</div>
@@ -114,6 +119,7 @@
 							<div class="col-sm-10">
 								<div class="input-group">
 									<input type="password" name="payment_worldline_setting[account][webhook_secret][{{ environment['code'] }}]" value="{% if setting['account']['webhook_secret'][environment['code']] %}{{ setting['account']['webhook_secret'][environment['code']] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_webhook_secret' ~ environment['prefix']) }}" id="input-webhook-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="form-control" />
+									<button type="button" data-bs-toggle="tooltip" title="{{ button_view }}" class="btn btn-light view-password" field_id="input-webhook-secret{{ environment['prefix']|replace({'_': '-'}) }}"><i class="fas fa-eye"></i></button>
 									<div id="error-webhook-secret{{ environment['prefix']|replace({'_': '-'}) }}" class="invalid-feedback"></div>
 								</div>
 							</div>
@@ -167,6 +173,16 @@ $('#input-environment').on('change', function() {
 		$('.environment-test').removeClass('d-none');
 		$('.environment-live').addClass('d-none');
 	}	
+});
+
+$('#form-payment').delegate('.view-password', 'click', function(event) {
+	event.preventDefault();
+	
+	if ($('#' + $(this).attr('field_id')).attr('type') == 'password') {
+		$('#' + $(this).attr('field_id')).attr('type', 'text');
+	} else {
+		$('#' + $(this).attr('field_id')).attr('type', 'password');
+	}
 });
 
 $('#form-payment').delegate('.reset-api-endpoint', 'click', function(event) {

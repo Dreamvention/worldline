@@ -5,20 +5,22 @@ Our OpenCart plug-in comes with regular updates and full integration support, of
 Supports [Hosted Checkout Page](https://docs.direct.worldline-solutions.com/en/integration/basic-integration-methods/hosted-checkout-page) integration mode.
 
 Offers the following payment methods on our platform:
-- Alipay+
 - American Express
-- Apple Pay
-- Bizum
-- Diners Club
-- Google Pay
-- Meal vouchers
-- Klarna
-- Maestro
+- Carte Bancaire
 - MasterCard
-- Oney 3x-4x
-- PayPal
 - Visa
-- WeChat Pay
+- Google Pay
+- Bancontact
+- Bizum
+- JCB
+- Maestro
+- Diners Club
+- Alipay+
+- iDEAL
+- Intersolve
+- Oney 3x-4x        
+- PayPal
+- WeChatPay
 
 Accepts payment operations (refunds, authorizations, captures, etc.) directly from your Direct account.
 

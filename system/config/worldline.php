@@ -1,6 +1,12 @@
 <?php 
 $_['worldline_setting'] = [
-	'version' => '1.0.0',
+	'extension' => [
+		'extension_id' => 'WLOP-opencart',
+		'name' => 'Direct Opencart Plugin',
+		'version' => '2.0.0',
+		'creator' => 'Dreamvention',
+		'integrator' => 'OnlinePayments'
+	],
 	'account' => [
 		'environment' => 'live',
 		'merchant_id' => [],
@@ -16,15 +22,27 @@ $_['worldline_setting'] = [
 		'cron_token' => ''
 	],
 	'advanced' => [
-		'title' => [],
-		'button_title' => [],
 		'debug' => false,
 		'authorization_mode' => 'sale',
-		'group_cards' => true,
+		'capture_installation' => 'manually',
 		'forced_tokenization' => true,
-		'tds_secure_status' => true,
+		'surcharging_status' => false,
+		'tds_status' => true,
 		'tds_challenge_indicator' => 'challenge-required',
-		'tds_exemption_request' => 'low-value',
+		'tds_exemption_request' => 'low-value'
+	],
+	'hosted_checkout' => [
+		'status' => true,
+		'title' => [],
+		'button_title' => [],
+		'group_cards' => true,
+		'template' => '',
+		'wero_capture_trigger' => 'shipping'
+	],
+	'hosted_tokenization' => [
+		'status' => true,
+		'title' => [],
+		'button_title' => [],
 		'template' => ''
 	],
 	'order_status' => [
@@ -59,6 +77,7 @@ $_['worldline_setting'] = [
 			'id' => 11
 		]
 	],
+	'final_order_status' => [],
 	'suggest' => [
 		'company_name' => '',
 		'message' => ''
@@ -89,6 +108,53 @@ $_['worldline_setting'] = [
 		'sale' => [
 			'code' => 'sale',
 			'name' => 'text_sale'
+		]
+	],
+	'capture_installation' => [
+		'manually' => [
+			'code' => 'manually',
+			'name' => 'text_manually',
+			'days' => 0
+		],
+		'next_day' => [
+			'code' => 'next_day',
+			'name' => 'text_next_day',
+			'days' => 1
+		],
+		'after_two_day' => [
+			'code' => 'after_one_day',
+			'name' => 'text_after_one_day',
+			'days' => 2
+		],
+		'after_two_days' => [
+			'code' => 'after_two_days',
+			'name' => 'text_after_two_days',
+			'days' => 3
+		],
+		'after_three_days' => [
+			'code' => 'after_three_days',
+			'name' => 'text_after_three_days',
+			'days' => 4
+		],
+		'after_four_days' => [
+			'code' => 'after_four_days',
+			'name' => 'text_after_four_days',
+			'days' => 5
+		],
+		'after_five_days' => [
+			'code' => 'after_five_days',
+			'name' => 'text_after_five_days',
+			'days' => 6
+		],
+		'after_six_days' => [
+			'code' => 'after_six_days',
+			'name' => 'text_after_six_days',
+			'days' => 7
+		],
+		'after_seven_days' => [
+			'code' => 'after_seven_days',
+			'name' => 'text_after_seven_days',
+			'days' => 8
 		]
 	],
 	'tds_challenge_indicator' => [
@@ -125,6 +191,28 @@ $_['worldline_setting'] = [
 		'whitelist' => [
 			'code' => 'whitelist',
 			'name' => 'text_exemption_whitelist'
+		]
+	],
+	'wero_capture_trigger' => [
+		'shipping' => [
+			'code' => 'shipping',
+			'name' => 'text_capture_trigger_shipping'
+		],
+		'delivery' => [
+			'code' => 'delivery',
+			'name' => 'text_capture_trigger_delivery'
+		],
+		'availability' => [
+			'code' => 'availability',
+			'name' => 'text_capture_trigger_availability'
+		],
+		'service_fulfilment' => [
+			'code' => 'serviceFulfilment',
+			'name' => 'text_capture_trigger_service_fulfilment'
+		],		
+		'other' => [
+			'code' => 'other',
+			'name' => 'text_capture_trigger_other'
 		]
 	],
 	'transaction_status' => [
