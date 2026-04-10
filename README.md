@@ -12,7 +12,7 @@ Offers the following payment methods on our platform:
 Accepts payment operations (refunds, authorizations, captures, etc.) directly from your Direct account.
 
 ## Install plugin
-The first step to use the plugin is the installation process. Before you proceed, make sure your infrastructure meets these system requirements:
+The first step to use the plugin is the installation process. Before you proceed, make sure your infrastructure meets these system requirements:
 
 - Download the plugin from [GitHub](https://github.com/Dreamvention/worldline/releases) or from [OpenCart](https://github.com/Dreamvention/worldline/releases)
 - Active [test](https://secure.ogone.com/Ncol/Test/Backoffice/login/)/[live](https://secure.ogone.com/Ncol/Prod/Backoffice/login/) account on our platform
